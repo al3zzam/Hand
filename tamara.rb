@@ -38,11 +38,8 @@ def same_rank
 end
 
 def sequential
-    if($number_of_cards>13)
-        puts "Invalid"
-        return false
-    end
-    if($cards_ranks[0].to_i==1&&$cards_ranks[1].to_i==13)
+    
+    if($cards_ranks[0].to_i==1&&($cards_ranks[1].to_i==13||$cards_ranks[2].to_i==12||($number_of_cards==4&&$cards_ranks[3].to_i==11)))
         $cards_ranks[0]=14
     end
     if($cards_suits[0].ord!="j".ord&&$cards_suits[1].ord!="j".ord)
@@ -57,35 +54,57 @@ else
             $cards_suits=$cards_suits.reverse()
         end
     else
+        if($number_of_cards==3)
+            if($cards_suits[0].ord!="j".ord&&$cards_suits[2].ord!="j".ord)
+            if($cards_ranks[0].to_i-1>$cards_ranks[2].to_i)
+                $cards_ranks=$cards_ranks.reverse()
+                $cards_suits=$cards_suits.reverse()
+            end
+        else
+            return true
+        end
+        else
+        if($cards_suits[2].ord!="j".ord&&$cards_suits[3].ord!="j".ord)
         if($cards_ranks[3].to_i-1!=$cards_ranks[2].to_i)
             $cards_ranks=$cards_ranks.reverse()
             $cards_suits=$cards_suits.reverse()
         end
+    else
+        
+            if($cards_suits[0].ord!="j".ord&&$cards_suits[3].ord!="j".ord)
+                if($cards_ranks[0].to_i-1>$cards_ranks[3].to_i)
+                    $cards_ranks=$cards_ranks.reverse()
+                    $cards_suits=$cards_suits.reverse()
+                end
+            else
+                if($cards_suits[1].ord!="j".ord&&$cards_suits[3].ord!="j".ord)
+                    if($cards_ranks[1].to_i-1>$cards_ranks[3].to_i)
+                        $cards_ranks=$cards_ranks.reverse()
+                        $cards_suits=$cards_suits.reverse()
+                    end
+                end
+            end
+        end
     end
 end
+    end
+
 
     if($cards_suits[0].ord=="j".ord)
         if($cards_suits[1].ord=="j".ord)
-            if($cards_ranks[2].to_i<3)
-                puts "Invalid"
-                return false
-            end
             $cards_suits[1]=$cards_suits[2]
             $cards_ranks[1]=$cards_ranks[2].to_i-1
         end
-        if($cards_ranks[1].to_i<2)
-            puts "Invalid"
-            return false
-        end
         $cards_suits[0]=$cards_suits[1]
         $cards_ranks[0]=$cards_ranks[1].to_i-1
+        
     end
     for i in 1..$number_of_cards-1 do
         if($cards_suits[i].ord=="j".ord)
             $cards_ranks[i]=$cards_ranks[i-1].to_i+1
             $cards_suits[i]=$cards_suits[i-1]
         
-            if($cards_ranks[i].to_i==14&&($cards_ranks[0].to_i==0||$cards_ranks[0].to_i==14)||$cards_ranks[i].to_i==15)
+            if($cards_ranks[i].to_i==14&&($cards_ranks[0].to_i==1||$cards_ranks[0].to_i==14)||$cards_ranks[i].to_i==15)
                 puts "Invalid"
                 return false
             end
@@ -94,7 +113,7 @@ end
                     $cards_ranks[i]=14
                 end
             if($cards_suits[i].ord!=$cards_suits[i-1].ord||($cards_ranks[i].to_i-1!=$cards_ranks[i-1].to_i))
-                puts "Invalid"
+               puts "Invalid"
                 return false
             end
         end
@@ -112,6 +131,8 @@ if($number_of_cards>13||$number_of_cards<3)
 else
 $cards_ranks=Array.new
 $cards_suits=Array.new
+firstJ=false
+secondJ=false
 i=0
 inv=false
 while (i<$number_of_cards&&!inv)
@@ -131,7 +152,22 @@ while (i<$number_of_cards&&!inv)
         inv=true
         next
     end
-
+    if(suit.ord=="j".ord&&rank=="1")
+        if(firstJ)
+            puts "Invalid"
+            inv=true;
+        else
+        firstJ=true;
+    end
+end
+if(suit.ord=="j".ord&&rank=="2")
+    if(secondJ)
+        puts "Invalid"
+        inv=true
+        else
+            secondJ=true
+        end
+    end
     if(rank=="A")
         rank=1
     else
@@ -147,8 +183,6 @@ while (i<$number_of_cards&&!inv)
             end
         end
     end
-    
-
     $cards_ranks.push rank
     $cards_suits.push suit
     i+=1
